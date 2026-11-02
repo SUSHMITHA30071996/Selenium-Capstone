@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SauceDemo Test Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="com.saucedemo.tests.TestListener"/>
+    </listeners>
+
+    <!-- Smoke Tests: Quick sanity check of core features -->
+    <test name="Smoke Tests">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.saucedemo.tests.LoginTest"/>
+            <class name="com.saucedemo.tests.ProductListingTest"/>
+            <class name="com.saucedemo.tests.CartTest"/>
+            <class name="com.saucedemo.tests.CheckoutTest"/>
+            <class name="com.saucedemo.tests.NavigationTest"/>
+            <class name="com.saucedemo.tests.EndToEndTest"/>
+        </classes>
+    </test>
+
+    <!-- Full Regression: All tests across all modules -->
+    <test name="Full Regression">
+        <classes>
+            <class name="com.saucedemo.tests.LoginTest"/>
+            <class name="com.saucedemo.tests.ProductListingTest"/>
+            <class name="com.saucedemo.tests.ProductDetailTest"/>
+            <class name="com.saucedemo.tests.CartTest"/>
+            <class name="com.saucedemo.tests.CheckoutTest"/>
+            <class name="com.saucedemo.tests.NavigationTest"/>
+            <class name="com.saucedemo.tests.EndToEndTest"/>
+        </classes>
+    </test>
+
+</suite>
