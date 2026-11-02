@@ -15,7 +15,7 @@ public class NavigationTest extends BaseTest {
     private NavigationPage navigationPage;
     private LoginPage loginPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void initPages() {
         loginWithDefaultUser();
         productsPage = new ProductsPage(driver);

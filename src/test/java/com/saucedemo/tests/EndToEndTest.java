@@ -19,7 +19,7 @@ public class EndToEndTest extends BaseTest {
     private CheckoutStepTwoPage checkoutStepTwo;
     private CheckoutCompletePage checkoutComplete;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void initPages() {
         productsPage = new ProductsPage(driver);
         cartPage = new CartPage(driver);

@@ -14,7 +14,7 @@ public class LoginTest extends BaseTest {
     private LoginPage loginPage;
     private ProductsPage productsPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void initPages() {
         loginPage = new LoginPage(driver);
         productsPage = new ProductsPage(driver);

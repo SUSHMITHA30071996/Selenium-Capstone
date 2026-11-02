@@ -19,7 +19,7 @@ public class CheckoutTest extends BaseTest {
     private CheckoutStepTwoPage checkoutStepTwo;
     private CheckoutCompletePage checkoutComplete;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void initPages() {
         loginWithDefaultUser();
         productsPage = new ProductsPage(driver);

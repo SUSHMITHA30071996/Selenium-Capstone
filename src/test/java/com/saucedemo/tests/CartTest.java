@@ -15,7 +15,7 @@ public class CartTest extends BaseTest {
     private ProductsPage productsPage;
     private CartPage cartPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void initPages() {
         loginWithDefaultUser();
         productsPage = new ProductsPage(driver);
