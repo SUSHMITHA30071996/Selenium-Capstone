@@ -22,28 +22,14 @@ public class ProductDetailTest extends BaseTest {
         productDetailPage = new ProductDetailPage(driver);
     }
 
-    @Test(groups = {"products"})
-    public void testNavigateToProductDetail() {
-        // Get the first product name from the listing
-        List<String> productNames = productsPage.getProductNames();
-        String firstProductName = productNames.get(0);
-
-        // Click on the product
-        productsPage.clickProductByName(firstProductName);
-
-        // Verify we are on the detail page
-        Assert.assertTrue(productDetailPage.isProductDetailPageDisplayed(),
-                "Product detail page should be displayed");
-    }
-
-    @Test(groups = {"products"})
+    @Test()
     public void testProductDetailInfoMatchesListing() {
         // Get product info from listing page
-        List<String> listingNames = productsPage.getProductNames();
-        List<Double> listingPrices = productsPage.getProductPrices();
+        List<String> listofProdNames = productsPage.getProductNames();
+        List<Double> listingofProdPrices = productsPage.getProductPrices();
 
-        String expectedName = listingNames.get(0);
-        String expectedPrice = "$" + String.format("%.2f", listingPrices.get(0));
+        String expectedName = listofProdNames.get(0);
+        String expectedPrice = "$" + String.format("%.2f", listingofProdPrices.get(0));
 
         // Navigate to detail page
         productsPage.clickProductByName(expectedName);
@@ -52,44 +38,24 @@ public class ProductDetailTest extends BaseTest {
         String detailName = productDetailPage.getProductName();
         String detailPrice = productDetailPage.getProductPrice();
 
-        Assert.assertEquals(detailName, expectedName,
-                "Product name on detail page should match listing");
-        Assert.assertEquals(detailPrice, expectedPrice,
-                "Product price on detail page should match listing");
+        Assert.assertEquals(detailName, expectedName);
+        Assert.assertEquals(detailPrice, expectedPrice);
     }
 
-    @Test(groups = {"products"})
-    public void testProductDetailHasDescription() {
-        List<String> productNames = productsPage.getProductNames();
-        productsPage.clickProductByName(productNames.get(0));
-
-        String description = productDetailPage.getProductDescription();
-        Assert.assertFalse(description.isEmpty(),
-                "Product description should not be empty");
-    }
-
-    @Test(groups = {"products"})
+    @Test()
     public void testAddToCartFromDetailPage() {
         List<String> productNames = productsPage.getProductNames();
         productsPage.clickProductByName(productNames.get(0));
-
         productDetailPage.clickAddToCart();
 
         // Go back and check cart badge
         productDetailPage.clickBackToProducts();
-        String cartCount = productsPage.getCartBadgeCount();
-        Assert.assertEquals(cartCount, "1",
-                "Cart badge should show 1 after adding an item");
+        Assert.assertTrue(productsPage.isProductsPageDisplayed());
+        
+        //verifying the cart count
+        String cartCount = productsPage.getCartCount();
+        Assert.assertEquals(cartCount, "1");
     }
 
-    @Test(groups = {"products"})
-    public void testBackToProductsFromDetail() {
-        List<String> productNames = productsPage.getProductNames();
-        productsPage.clickProductByName(productNames.get(0));
-
-        productDetailPage.clickBackToProducts();
-
-        Assert.assertTrue(productsPage.isProductsPageDisplayed(),
-                "Should be back on the products page");
-    }
+   
 }

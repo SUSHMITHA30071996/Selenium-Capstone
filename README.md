@@ -27,9 +27,9 @@ saucedemo-selenium/
 │   │   │   ├── CheckoutCompletePage.java
 │   │   │   └── NavigationPage.java
 │   │   └── utils/                   # Utility/helper classes
-│   │       ├── ConfigReader.java
-│   │       ├── WaitHelper.java
-│   │       └── ScreenshotHelper.java
+│   │       ├── ConfigurationReader.java
+│   │       ├── WaitShape.java
+│   │       └── Screenshot.java
 │   └── test/
 │       ├── java/com/saucedemo/tests/  # Test classes
 │       │   ├── BaseTest.java
@@ -106,7 +106,7 @@ Test settings are in `src/test/resources/config.properties`:
 ## Key Design Decisions
 
 - **Page Object Model (POM)**: Each page has its own class with locators and methods. Test classes never use locators directly.
-- **Explicit Waits**: All element interactions use explicit waits via `WaitHelper`. No `Thread.sleep()` in production code (only used for menu animations in navigation tests).
+- **Explicit Waits**: All element interactions use explicit waits via `WaitShape`. No `Thread.sleep()` in production code (only used for menu animations in navigation tests).
 - **Config-Driven**: URLs, credentials, and timeouts come from `config.properties`, not hardcoded in tests.
 - **Screenshot on Failure**: The `TestListener` automatically captures and attaches screenshots when a test fails.
 - **Extent Reports**: HTML reports with pass/fail/skip counts are generated after every run.

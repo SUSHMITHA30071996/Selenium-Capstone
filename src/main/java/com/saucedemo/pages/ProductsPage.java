@@ -2,56 +2,67 @@
 // ABOUTME: Provides methods to interact with product listings, sorting, and the cart icon.
 package com.saucedemo.pages;
 
-import com.saucedemo.utils.WaitHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductsPage {
+public class ProductsPage extends BasePage {
 
-    private WebDriver driver;
-    private WaitHelper waitHelper;
+    @FindBy(className = "title")
+    private WebElement productPageTitle;
 
-    // Locators
-    private By pageTitle = By.className("title");
-    private By inventoryItems = By.className("inventory_item");
-    private By inventoryItemNames = By.className("inventory_item_name");
-    private By inventoryItemPrices = By.className("inventory_item_price");
-    private By sortDropdown = By.className("product_sort_container");
-    private By cartBadge = By.className("shopping_cart_badge");
-    private By cartLink = By.className("shopping_cart_link");
-    private By burgerMenuButton = By.id("react-burger-menu-btn");
-    private By addToCartButtons = By.cssSelector(".btn_inventory");
+    @FindBy(className = "inventory_item")
+    private List<WebElement> items;
+
+    @FindBy(className = "inventory_item_name")
+    private List<WebElement> itemNames;
+
+    @FindBy(className = "inventory_item_price")
+    private List<WebElement> itemPrices;
+
+    @FindBy(className = "product_sort_container")
+    private WebElement sortDropdown;
+
+    @FindBy(className = "shopping_cart_badge")
+    private WebElement cartIcon;
+
+    @FindBy(className = "shopping_cart_link")
+    private WebElement cartLink;
+
+    @FindBy(id = "react-burger-menu-btn")
+    private WebElement sideMenuButton;
+
+    @FindBy(css = ".btn_inventory")
+    private List<WebElement> addToCartButton;
 
     public ProductsPage(WebDriver driver) {
-        this.driver = driver;
-        this.waitHelper = new WaitHelper(driver);
+        super(driver);
     }
 
     public String getPageTitle() {
-        return waitHelper.waitForElementVisible(pageTitle).getText();
+        return waitShape.waitForElementVisible(productPageTitle).getText();
     }
 
     public boolean isProductsPageDisplayed() {
         try {
-            return waitHelper.waitForElementVisible(pageTitle).getText().equals("Products");
+            return waitShape.waitForElementVisible(productPageTitle).getText().equals("Products");
         } catch (Exception e) {
             return false;
         }
     }
 
     public int getProductCount() {
-        return driver.findElements(inventoryItems).size();
+        return items.size();
     }
 
     public List<String> getProductNames() {
         List<String> names = new ArrayList<>();
-        List<WebElement> elements = driver.findElements(inventoryItemNames);
-        for (WebElement element : elements) {
+        for (WebElement element : itemNames) {
             names.add(element.getText());
         }
         return names;
@@ -59,8 +70,7 @@ public class ProductsPage {
 
     public List<Double> getProductPrices() {
         List<Double> prices = new ArrayList<>();
-        List<WebElement> elements = driver.findElements(inventoryItemPrices);
-        for (WebElement element : elements) {
+        for (WebElement element : itemPrices) {
             String priceText = element.getText().replace("$", "");
             prices.add(Double.parseDouble(priceText));
         }
@@ -68,34 +78,50 @@ public class ProductsPage {
     }
 
     public void sortBy(String optionValue) {
-        WebElement dropdown = waitHelper.waitForElementClickable(sortDropdown);
-        Select select = new Select(dropdown);
+        waitShape.waitForElementClickable(sortDropdown);
+        Select select = new Select(sortDropdown);
         select.selectByValue(optionValue);
     }
 
     public void addProductToCartByIndex(int index) {
-        List<WebElement> buttons = driver.findElements(addToCartButtons);
-        buttons.get(index).click();
+        addToCartButton.get(index).click();
+    }
+
+    public void addProductToCartByName(String productName) {
+        for (WebElement item : items) {
+            String name = item.findElement(By.className("inventory_item_name")).getText();
+            if (name.equals(productName)) {
+                item.findElement(By.cssSelector(".btn_inventory")).click();
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Product not found: " + productName);
     }
 
     public void clickProductByName(String productName) {
-        By productLink = By.xpath("//div[@class='inventory_item_name ' and text()='" + productName + "']");
-        waitHelper.waitForElementClickable(productLink).click();
+        for (WebElement element : itemNames) {
+            if (element.getText().equals(productName)) {
+                element.click();
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Product not found: " + productName);
     }
 
     public void clickCartIcon() {
-        waitHelper.waitForElementClickable(cartLink).click();
+        waitShape.waitForElementClickable(cartLink).click();
+        waitShape.waitForUrlContains("cart.html");
     }
 
-    public String getCartBadgeCount() {
+    public String getCartCount() {
         try {
-            return driver.findElement(cartBadge).getText();
+            return cartIcon.getText();
         } catch (Exception e) {
             return "0";
         }
     }
 
-    public void clickBurgerMenu() {
-        waitHelper.waitForElementClickable(burgerMenuButton).click();
+    public void clickSideMenu() {
+        waitShape.waitForElementClickable(sideMenuButton).click();
     }
 }

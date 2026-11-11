@@ -23,37 +23,29 @@ public class NavigationTest extends BaseTest {
         loginPage = new LoginPage(driver);
     }
 
-    @Test(groups = {"navigation"})
-    public void testSidebarMenuOpen() {
+    @Test(groups = {"smoke"})
+    public void testSidebarMenuNavigation() {
         navigationPage.openMenu();
-
-        // Small wait for menu animation
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
+        navigationPage.waitForMenuOpen();
 
         Assert.assertTrue(navigationPage.isMenuOpen(),
                 "Sidebar menu should be open");
-    }
-
-    @Test(groups = {"navigation"})
-    public void testSidebarMenuClose() {
-        navigationPage.openMenu();
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
 
         navigationPage.closeMenu();
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
 
         Assert.assertFalse(navigationPage.isMenuOpen(),
-                "Sidebar menu should be closed");
+                "Sidebar menu should be closed");            
     }
 
-    @Test(groups = {"navigation"})
-    public void testAllItemsLink() {
-        // First navigate away by going to cart
+
+    @Test(groups = {"smoke"})
+    public void testAllItemsLinkNavigation() {
+        // First navigating to cart
         productsPage.clickCartIcon();
 
         // Then use sidebar to go back to all items
         navigationPage.openMenu();
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
+        navigationPage.waitForMenuOpen();
 
         navigationPage.clickAllItems();
 
@@ -61,22 +53,20 @@ public class NavigationTest extends BaseTest {
                 "Should be on products page after clicking All Items");
     }
 
-    @Test(groups = {"navigation"})
-    public void testAboutLink() {
+    @Test(groups = {"smoke"})
+    public void testAboutLinkNavigation() {
         navigationPage.openMenu();
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
+        navigationPage.waitForMenuOpen();
 
-        navigationPage.clickAbout();
-
-        String currentUrl = driver.getCurrentUrl();
-        Assert.assertTrue(currentUrl.contains("saucelabs.com"),
-                "Should navigate to Sauce Labs website");
+        String aboutHref = navigationPage.getAboutLinkHref();
+        Assert.assertTrue(aboutHref.contains("saucelabs.com"),
+                "About link should point to Sauce Labs website");
     }
 
-    @Test(groups = {"smoke", "navigation"})
+    @Test(groups = {"smoke"})
     public void testLogoutLink() {
         navigationPage.openMenu();
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
+        navigationPage.waitForMenuOpen();
 
         navigationPage.clickLogout();
 
@@ -84,26 +74,25 @@ public class NavigationTest extends BaseTest {
                 "Should be on login page after logout");
     }
 
-    @Test(groups = {"navigation"})
+    @Test(groups = {"smoke"})
     public void testResetAppState() {
         // Add items to cart first
         productsPage.addProductToCartByIndex(0);
         productsPage.addProductToCartByIndex(1);
 
-        Assert.assertEquals(productsPage.getCartBadgeCount(), "2",
+        Assert.assertEquals(productsPage.getCartCount(), "2",
                 "Cart should have 2 items before reset");
 
         // Reset app state
         navigationPage.openMenu();
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
+        navigationPage.waitForMenuOpen();
 
         navigationPage.clickResetAppState();
 
-        // Close menu and verify cart is empty
         navigationPage.closeMenu();
-        try { Thread.sleep(500); } catch (InterruptedException e) { }
+        navigationPage.waitForMenuClosed();
 
-        Assert.assertEquals(productsPage.getCartBadgeCount(), "0",
+        Assert.assertEquals(productsPage.getCartCount(), "0",
                 "Cart should be empty after reset");
     }
 }

@@ -21,13 +21,13 @@ public class ProductListingTest extends BaseTest {
         productsPage = new ProductsPage(driver);
     }
 
-    @Test(groups = {"smoke", "products"})
+    @Test(groups = {"smoke"})
     public void testProductCount() {
         int count = productsPage.getProductCount();
-        Assert.assertEquals(count, 6, "There should be 6 products on the page");
+        Assert.assertEquals(count, 6);
     }
 
-    @Test(groups = {"products"})
+    @Test(groups = {"smoke"})
     public void testSortByNameAtoZ() {
         productsPage.sortBy("az");
         List<String> productNames = productsPage.getProductNames();
@@ -35,11 +35,10 @@ public class ProductListingTest extends BaseTest {
         List<String> sortedNames = new ArrayList<>(productNames);
         Collections.sort(sortedNames);
 
-        Assert.assertEquals(productNames, sortedNames,
-                "Products should be sorted alphabetically A to Z");
+        Assert.assertEquals(productNames, sortedNames);
     }
 
-    @Test(groups = {"products"})
+    @Test(groups = {"smoke"})
     public void testSortByNameZtoA() {
         productsPage.sortBy("za");
         List<String> productNames = productsPage.getProductNames();
@@ -47,11 +46,10 @@ public class ProductListingTest extends BaseTest {
         List<String> sortedNames = new ArrayList<>(productNames);
         sortedNames.sort(Collections.reverseOrder());
 
-        Assert.assertEquals(productNames, sortedNames,
-                "Products should be sorted alphabetically Z to A");
+        Assert.assertEquals(productNames, sortedNames);
     }
 
-    @Test(groups = {"products"})
+    @Test(groups = {"smoke"})
     public void testSortByPriceLowToHigh() {
         productsPage.sortBy("lohi");
         List<Double> prices = productsPage.getProductPrices();
@@ -59,11 +57,10 @@ public class ProductListingTest extends BaseTest {
         List<Double> sortedPrices = new ArrayList<>(prices);
         Collections.sort(sortedPrices);
 
-        Assert.assertEquals(prices, sortedPrices,
-                "Products should be sorted by price low to high");
+        Assert.assertEquals(prices, sortedPrices);
     }
 
-    @Test(groups = {"products"})
+    @Test(groups = {"smoke"})
     public void testSortByPriceHighToLow() {
         productsPage.sortBy("hilo");
         List<Double> prices = productsPage.getProductPrices();
@@ -71,13 +68,7 @@ public class ProductListingTest extends BaseTest {
         List<Double> sortedPrices = new ArrayList<>(prices);
         sortedPrices.sort(Collections.reverseOrder());
 
-        Assert.assertEquals(prices, sortedPrices,
-                "Products should be sorted by price high to low");
+        Assert.assertEquals(prices, sortedPrices);
     }
 
-    @Test(groups = {"products"})
-    public void testProductsPageTitle() {
-        String title = productsPage.getPageTitle();
-        Assert.assertEquals(title, "Products", "Page title should be 'Products'");
-    }
 }

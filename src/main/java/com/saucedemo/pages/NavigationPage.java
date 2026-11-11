@@ -2,59 +2,74 @@
 // ABOUTME: Provides methods to open/close the menu and click sidebar links.
 package com.saucedemo.pages;
 
-import com.saucedemo.utils.WaitHelper;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
-public class NavigationPage {
+public class NavigationPage extends BasePage {
 
-    private WebDriver driver;
-    private WaitHelper waitHelper;
+    @FindBy(id = "react-burger-menu-btn")
+    private WebElement sideMenuButton;
 
-    // Locators
-    private By burgerMenuButton = By.id("react-burger-menu-btn");
-    private By closeBurgerMenu = By.id("react-burger-cross-btn");
-    private By allItemsLink = By.id("inventory_sidebar_link");
-    private By aboutLink = By.id("about_sidebar_link");
-    private By logoutLink = By.id("logout_sidebar_link");
-    private By resetAppStateLink = By.id("reset_sidebar_link");
-    private By menuWrap = By.className("bm-menu-wrap");
+    @FindBy(id = "react-burger-cross-btn")
+    private WebElement closeSideMenu;
+
+    @FindBy(id = "inventory_sidebar_link")
+    private WebElement allItemsLink;
+
+    @FindBy(id = "about_sidebar_link")
+    private WebElement aboutLink;
+
+    @FindBy(id = "logout_sidebar_link")
+    private WebElement logoutLink;
+
+    @FindBy(id = "reset_sidebar_link")
+    private WebElement resetAppStateLink;
+
+    @FindBy(className = "bm-menu-wrap")
+    private WebElement menuWrap;
 
     public NavigationPage(WebDriver driver) {
-        this.driver = driver;
-        this.waitHelper = new WaitHelper(driver);
+        super(driver);
     }
 
     public void openMenu() {
-        waitHelper.waitForElementClickable(burgerMenuButton).click();
+        waitShape.waitForElementClickable(sideMenuButton).click();
     }
 
     public void closeMenu() {
-        waitHelper.waitForElementClickable(closeBurgerMenu).click();
+        waitShape.waitForElementClickable(closeSideMenu).click();
     }
 
     public void clickAllItems() {
-        waitHelper.waitForElementClickable(allItemsLink).click();
+        waitShape.waitForElementClickable(allItemsLink).click();
     }
 
     public void clickAbout() {
-        waitHelper.waitForElementClickable(aboutLink).click();
+        waitShape.waitForElementClickable(aboutLink).click();
+    }
+
+    public String getAboutLinkHref() {
+        return waitShape.waitForElementVisible(aboutLink).getAttribute("href");
     }
 
     public void clickLogout() {
-        waitHelper.waitForElementClickable(logoutLink).click();
+        waitShape.waitForElementClickable(logoutLink).click();
     }
 
     public void clickResetAppState() {
-        waitHelper.waitForElementClickable(resetAppStateLink).click();
+        waitShape.waitForElementClickable(resetAppStateLink).click();
+    }
+
+    public void waitForMenuOpen() {
+        waitShape.waitForElementVisible(closeSideMenu);
+    }
+
+    public void waitForMenuClosed() {
+        waitShape.waitForElementVisible(sideMenuButton);
     }
 
     public boolean isMenuOpen() {
-        try {
-            String ariaHidden = driver.findElement(menuWrap).getAttribute("aria-hidden");
-            return "false".equals(ariaHidden);
-        } catch (Exception e) {
-            return false;
-        }
+        return "false".equals(menuWrap.getAttribute("aria-hidden"));
     }
 }

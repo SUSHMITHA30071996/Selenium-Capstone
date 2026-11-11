@@ -6,21 +6,23 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.saucedemo.utils.ScreenshotHelper;
+import com.saucedemo.utils.Screenshot;
 import org.openqa.selenium.WebDriver;
-import org.testng.ITestContext;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
-public class TestListener implements ITestListener {
+public class TestListener implements ITestListener, ISuiteListener {
 
     private static ExtentReports extent;
     private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
 
     @Override
-    public void onStart(ITestContext context) {
+    public void onStart(ISuite suite) {
         ExtentSparkReporter sparkReporter = new ExtentSparkReporter("reports/TestReport.html");
         sparkReporter.config().setDocumentTitle("SauceDemo Test Report");
         sparkReporter.config().setReportName("Automation Test Results");
@@ -51,8 +53,8 @@ public class TestListener implements ITestListener {
         // Capture screenshot on failure
         WebDriver driver = getDriverFromTestInstance(result);
         if (driver != null) {
-            String screenshotPath = ScreenshotHelper.captureScreenshot(driver, result.getMethod().getMethodName());
-            test.get().addScreenCaptureFromPath(screenshotPath);
+            String screenshotPath = Screenshot.captureScreenshot(driver, result.getMethod().getMethodName());
+            test.get().addScreenCaptureFromPath("../" + screenshotPath.replace("\\", "/"));
         }
     }
 
@@ -62,8 +64,14 @@ public class TestListener implements ITestListener {
     }
 
     @Override
-    public void onFinish(ITestContext context) {
+    public void onFinish(ISuite suite) {
         extent.flush();
+        try {
+            String reportPath = new File("reports/TestReport.html").getAbsolutePath();
+            Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "", reportPath});
+        } catch (Exception e) {
+            System.out.println("Could not open report in browser: " + e.getMessage());
+        }
     }
 
     // Gets the WebDriver instance from the test class using reflection

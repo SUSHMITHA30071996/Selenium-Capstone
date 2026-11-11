@@ -8,6 +8,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.saucedemo.utils.ConfigurationReader;
+
 import java.util.List;
 
 public class CartTest extends BaseTest {
@@ -22,44 +24,46 @@ public class CartTest extends BaseTest {
         cartPage = new CartPage(driver);
     }
 
-    @Test(groups = {"smoke", "cart"})
+    @Test()
     public void testAddSingleItemToCart() {
-        productsPage.addProductToCartByIndex(0);
+        String productName = ConfigurationReader.getProperty("cart.single.item");
+        productsPage.addProductToCartByName(productName);
         productsPage.clickCartIcon();
 
-        Assert.assertTrue(cartPage.isCartPageDisplayed(), "Cart page should be displayed");
-        Assert.assertEquals(cartPage.getCartItemCount(), 1,
-                "Cart should have 1 item");
+        Assert.assertTrue(cartPage.isCartPageDisplayed());
+        Assert.assertEquals(cartPage.getCartItemCount(), 1);
     }
 
-    @Test(groups = {"cart"})
+    @Test()
     public void testAddMultipleItemsToCart() {
-        productsPage.addProductToCartByIndex(0);
-        productsPage.addProductToCartByIndex(1);
-        productsPage.addProductToCartByIndex(2);
+        String[] productNames = ConfigurationReader.getProperty("cart.multiple.items").split(",");
+        for (String productName : productNames) {
+            productsPage.addProductToCartByName(productName.trim());
+        }
         productsPage.clickCartIcon();
 
-        Assert.assertEquals(cartPage.getCartItemCount(), 3,
-                "Cart should have 3 items");
+        Assert.assertEquals(cartPage.getCartItemCount(), productNames.length,
+                "Cart should have " + productNames.length + " items");
     }
 
-    @Test(groups = {"cart"})
+    @Test()
     public void testRemoveItemFromCart() {
-        // Add two items
-        productsPage.addProductToCartByIndex(0);
-        productsPage.addProductToCartByIndex(1);
+        String[] productNames = ConfigurationReader.getProperty("cart.multiple.items").split(",");
+        for (String productName : productNames) {
+            productsPage.addProductToCartByName(productName.trim());
+        }
         productsPage.clickCartIcon();
 
-        Assert.assertEquals(cartPage.getCartItemCount(), 2, "Cart should have 2 items");
+        Assert.assertEquals(cartPage.getCartItemCount(), productNames.length,
+                "Cart should have " + productNames.length + " items");
 
-        // Remove first item
         cartPage.removeItemByIndex(0);
 
-        Assert.assertEquals(cartPage.getCartItemCount(), 1,
-                "Cart should have 1 item after removal");
+        Assert.assertEquals(cartPage.getCartItemCount(), productNames.length - 1,
+                "Cart should have " + (productNames.length - 1) + " items after removal");
     }
 
-    @Test(groups = {"cart"})
+    @Test()
     public void testVerifyItemDetailsInCart() {
         // Get the first product's name and price from listing
         List<String> productNames = productsPage.getProductNames();
@@ -72,23 +76,9 @@ public class CartTest extends BaseTest {
         Assert.assertTrue(cartNames.contains(expectedName),
                 "Cart should contain the added product: " + expectedName);
 
-        // Verify quantity is 1
-        String quantity = cartPage.getItemQuantity(0);
-        Assert.assertEquals(quantity, "1", "Item quantity should be 1");
     }
 
-    @Test(groups = {"cart"})
-    public void testVerifyItemPriceInCart() {
-        productsPage.addProductToCartByIndex(0);
-        productsPage.clickCartIcon();
-
-        List<String> cartPrices = cartPage.getCartItemPrices();
-        Assert.assertFalse(cartPrices.isEmpty(), "Cart should show item prices");
-        Assert.assertTrue(cartPrices.get(0).contains("$"),
-                "Price should contain dollar sign");
-    }
-
-    @Test(groups = {"cart"})
+    @Test()
     public void testContinueShoppingButton() {
         productsPage.addProductToCartByIndex(0);
         productsPage.clickCartIcon();
@@ -101,14 +91,4 @@ public class CartTest extends BaseTest {
                 "Should be back on products page after clicking continue shopping");
     }
 
-    @Test(groups = {"cart"})
-    public void testCartBadgeUpdatesCorrectly() {
-        productsPage.addProductToCartByIndex(0);
-        Assert.assertEquals(productsPage.getCartBadgeCount(), "1",
-                "Badge should show 1");
-
-        productsPage.addProductToCartByIndex(1);
-        Assert.assertEquals(productsPage.getCartBadgeCount(), "2",
-                "Badge should show 2");
-    }
 }

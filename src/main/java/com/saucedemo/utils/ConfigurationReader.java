@@ -6,20 +6,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class ConfigReader {
+public class ConfigurationReader {
 
     private static Properties properties;
 
     static {
-        try {
-            String filePath = "src/test/resources/config.properties";
-            FileInputStream input = new FileInputStream(filePath);
-            properties = new Properties();
+        properties = new Properties();
+        String filePath = "src/test/resources/config.properties";
+        try (FileInputStream input = new FileInputStream(filePath)) {
             properties.load(input);
-            input.close();
         } catch (IOException e) {
-            System.out.println("Could not load config.properties file");
-            e.printStackTrace();
+            throw new RuntimeException("Could not load config.properties file: " + filePath, e);
         }
     }
 

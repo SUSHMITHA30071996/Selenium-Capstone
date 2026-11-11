@@ -2,56 +2,43 @@
 // ABOUTME: Provides methods to enter credentials, click login, and read error messages.
 package com.saucedemo.pages;
 
-import com.saucedemo.utils.WaitHelper;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
-public class LoginPage {
+public class LoginPage extends BasePage {
 
-    private WebDriver driver;
-    private WaitHelper waitHelper;
+    @FindBy(id = "user-name")
+    private WebElement Username;
 
-    // Locators
-    private By usernameField = By.id("user-name");
-    private By passwordField = By.id("password");
-    private By loginButton = By.id("login-button");
-    private By errorMessage = By.cssSelector("[data-test='error']");
+    @FindBy(id = "password")
+    private WebElement Password;
+
+    @FindBy(id = "login-button")
+    private WebElement loginButton;
+
+    @FindBy(css = "[data-test='error']")
+    private WebElement LoginErrorMessage;
 
     public LoginPage(WebDriver driver) {
-        this.driver = driver;
-        this.waitHelper = new WaitHelper(driver);
+        super(driver);
     }
 
-    public void enterUsername(String username) {
-        WebElement element = waitHelper.waitForElementVisible(usernameField);
-        element.clear();
-        element.sendKeys(username);
-    }
-
-    public void enterPassword(String password) {
-        WebElement element = waitHelper.waitForElementVisible(passwordField);
-        element.clear();
-        element.sendKeys(password);
-    }
-
-    public void clickLogin() {
-        waitHelper.waitForElementClickable(loginButton).click();
-    }
 
     public void login(String username, String password) {
-        enterUsername(username);
-        enterPassword(password);
-        clickLogin();
+       
+        Username.sendKeys(username);
+        Password.sendKeys(password);
+        loginButton.click();
     }
 
     public String getErrorMessage() {
-        return waitHelper.waitForElementVisible(errorMessage).getText();
+        return waitShape.waitForElementVisible(LoginErrorMessage).getText();
     }
 
     public boolean isErrorMessageDisplayed() {
         try {
-            return driver.findElement(errorMessage).isDisplayed();
+            return LoginErrorMessage.isDisplayed();
         } catch (Exception e) {
             return false;
         }
@@ -59,9 +46,10 @@ public class LoginPage {
 
     public boolean isLoginPageDisplayed() {
         try {
-            return driver.findElement(loginButton).isDisplayed();
+            return loginButton.isDisplayed();
         } catch (Exception e) {
             return false;
         }
     }
 }
+

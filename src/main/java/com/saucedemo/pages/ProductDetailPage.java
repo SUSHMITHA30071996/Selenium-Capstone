@@ -2,51 +2,57 @@
 // ABOUTME: Provides methods to read product info and add to cart from the detail view.
 package com.saucedemo.pages;
 
-import com.saucedemo.utils.WaitHelper;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
-public class ProductDetailPage {
+public class ProductDetailPage extends BasePage {
 
-    private WebDriver driver;
-    private WaitHelper waitHelper;
+    @FindBy(className = "inventory_details_name")
+    private WebElement productName;
 
-    // Locators
-    private By productName = By.className("inventory_details_name");
-    private By productPrice = By.className("inventory_details_price");
-    private By productDescription = By.className("inventory_details_desc");
-    private By addToCartButton = By.cssSelector(".btn_inventory");
-    private By removeButton = By.cssSelector(".btn_secondary");
-    private By backToProductsButton = By.id("back-to-products");
+    @FindBy(className = "inventory_details_price")
+    private WebElement productPrice;
+
+    @FindBy(className = "inventory_details_desc")
+    private WebElement productDescription;
+
+    @FindBy(css = ".btn_inventory")
+    private WebElement addToCartButton;
+
+    @FindBy(css = ".btn_secondary")
+    private WebElement removeButton;
+
+    @FindBy(id = "back-to-products")
+    private WebElement backToProductsButton;
 
     public ProductDetailPage(WebDriver driver) {
-        this.driver = driver;
-        this.waitHelper = new WaitHelper(driver);
+        super(driver);
     }
 
     public String getProductName() {
-        return waitHelper.waitForElementVisible(productName).getText();
+        return waitShape.waitForElementVisible(productName).getText();
     }
 
     public String getProductPrice() {
-        return waitHelper.waitForElementVisible(productPrice).getText();
+        return waitShape.waitForElementVisible(productPrice).getText();
     }
 
     public String getProductDescription() {
-        return waitHelper.waitForElementVisible(productDescription).getText();
+        return waitShape.waitForElementVisible(productDescription).getText();
     }
 
     public void clickAddToCart() {
-        waitHelper.waitForElementClickable(addToCartButton).click();
+        waitShape.waitForElementClickable(addToCartButton).click();
     }
 
     public void clickBackToProducts() {
-        waitHelper.waitForElementClickable(backToProductsButton).click();
+        waitShape.waitForElementClickable(backToProductsButton).click();
     }
 
     public boolean isProductDetailPageDisplayed() {
         try {
-            return driver.findElement(productName).isDisplayed();
+            return productName.isDisplayed();
         } catch (Exception e) {
             return false;
         }

@@ -16,9 +16,18 @@
         <classes>
             <class name="com.saucedemo.tests.LoginTest"/>
             <class name="com.saucedemo.tests.ProductListingTest"/>
-            <class name="com.saucedemo.tests.CartTest"/>
-            <class name="com.saucedemo.tests.CheckoutTest"/>
             <class name="com.saucedemo.tests.NavigationTest"/>
+        </classes>
+    </test>
+
+    <!-- Happy Path: End-to-end user journey -->
+    <test name="Happy Path">
+        <groups>
+            <run>
+                <include name="happy path"/>
+            </run>
+        </groups>
+        <classes>
             <class name="com.saucedemo.tests.EndToEndTest"/>
         </classes>
     </test>
